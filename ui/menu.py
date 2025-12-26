@@ -73,13 +73,39 @@ def select_ui_option(scraper, base_url):
                     for idx, album in enumerate(albums, 1):
                         table.add_row(f"[bold green]{idx}[/bold green]", f"[bold yellow]{album['title']}[/bold yellow]", f"[dim]{album['url']}[/dim]")
                     console.print(table)
-                    console.print("[bold green]Enter album number to download all songs or Esc to go back:[/bold green] \n", end="")
-                    key2 = readchar.readkey()
-                    if key2 == readchar.key.ESC:
+                    console.print("[bold green]Enter album number(s) separated by comma to download, type 'all' to download all albums, or Esc to go back:[/bold green]")
+                    try:
+                        input_str = console.input("[bold green]Your choice: [/bold green]")
+                    except KeyboardInterrupt:
+                        console.print("\n[bold magenta]Good bye![/bold magenta]")
+                        sys.exit(0)
+                    if input_str.lower() == 'esc':
                         return None
-                    if key2 in map(str, range(1, len(albums)+1)):
-                        album = albums[int(key2)-1]
-                        download_album_songs(scraper, album["url"], album["title"], base_url=base_url)
+                    if input_str.lower() == 'all':
+                        selected_indices = list(range(1, len(albums)+1))
+                    else:
+                        selected_indices = []
+                        invalid_inputs = []
+                        for part in input_str.split(','):
+                            part = part.strip()
+                            if part.isdigit():
+                                idx = int(part)
+                                if 1 <= idx <= len(albums):
+                                    selected_indices.append(idx)
+                                else:
+                                    invalid_inputs.append(part)
+                            elif part:  # non-empty, non-numeric input
+                                invalid_inputs.append(part)
+                        
+                        if invalid_inputs:
+                            console.print(f"[bold yellow]Warning: Ignoring invalid input(s): {', '.join(invalid_inputs)}[/bold yellow]")
+                    
+                    if not selected_indices:
+                        console.print("[bold red]No valid album numbers selected.[/bold red]")
+                    else:
+                        for idx in selected_indices:
+                            album = albums[idx-1]
+                            download_album_songs(scraper, album["url"], album["title"], base_url=base_url)
                 else:
                     console.print("[bold red]No trending albums found.[/bold red]")
             elif selected == "directors":
