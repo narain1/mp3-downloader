@@ -17,11 +17,11 @@
 
    ![Download Type](screenshots/2.png)
 
-10. If you select "Trending Albums", a list of trending albums will be displayed. Enter the album number you wish to download.
+10. If you select "Trending Albums", a list of trending albums will be displayed. Enter the album number(s) you wish to download. You can enter multiple album numbers separated by commas, or type `all` to download all trending albums.
 
     ![Trending Albums](screenshots/3.png)
 
-11. Once you have entered the album number, the download will begin.
+11. For example: `1, 2, 3` will download albums 1, 2, and 3. If you type `all`, it will download all trending albums. Once you have entered your selection, the download will begin.
 
     ![Music Directors](screenshots/4.png)
 
