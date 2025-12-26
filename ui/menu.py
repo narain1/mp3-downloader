@@ -85,15 +85,27 @@ def select_ui_option(scraper, base_url):
                         selected_indices = list(range(1, len(albums)+1))
                     else:
                         selected_indices = []
+                        invalid_inputs = []
                         for part in input_str.split(','):
                             part = part.strip()
                             if part.isdigit():
                                 idx = int(part)
                                 if 1 <= idx <= len(albums):
                                     selected_indices.append(idx)
-                    for idx in selected_indices:
-                        album = albums[idx-1]
-                        download_album_songs(scraper, album["url"], album["title"], base_url=base_url)
+                                else:
+                                    invalid_inputs.append(part)
+                            elif part:  # non-empty, non-numeric input
+                                invalid_inputs.append(part)
+                        
+                        if invalid_inputs:
+                            console.print(f"[bold yellow]Warning: Ignoring invalid input(s): {', '.join(invalid_inputs)}[/bold yellow]")
+                    
+                    if not selected_indices:
+                        console.print("[bold red]No valid album numbers selected.[/bold red]")
+                    else:
+                        for idx in selected_indices:
+                            album = albums[idx-1]
+                            download_album_songs(scraper, album["url"], album["title"], base_url=base_url)
                 else:
                     console.print("[bold red]No trending albums found.[/bold red]")
             elif selected == "directors":
